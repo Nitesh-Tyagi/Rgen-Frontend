@@ -1,12 +1,75 @@
-import React, {useEffect, useState} from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-function Sidebar() {
-    return (
-        <div className="flex flex-row justify-center items-center px-24 absolute w-1/4 left-0 top-16 bottom-0 bg-stone-300 shadow-md">
-            <p className="">Sidebar</p>
+function Sidebar({ userId }) {
+  const [videos, setVideos] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (userId) {
+      fetch('http://localhost:8000/api/video/getVideos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setVideos(data);
+        })
+        .catch((error) => {
+          console.error('Error fetching videos:', error);
+        });
+    }
+  }, [userId]);
+
+  const handleClick = (id) => {
+    navigate(`/dashboard/${userId}/${id}`);
+  };
+
+  return (
+    <div
+      className="flex flex-col justify-center items-center px-24 absolute w-1/4 left-0 top-16 bottom-0 bg-stone-300 shadow-md"
+      style={{ overflowX: 'hidden' }}
+    >
+      {videos.map((video) => (
+        <div
+          key={video.id}
+          className="mb-1 w-60 bg-white max-h-28 overflow-y-auto"
+          style={{
+            scrollbarWidth: 'thin',
+            scrollbarColor: 'red yellow',
+            overflowX: 'hidden',
+          }}
+        >
+          {video.id === video.input && (
+            <p className="font-bold w-60 bg-zinc-900 text-zinc-100">
+              <Link
+                to={`/dashboard/${userId}/${video.id}`}
+                className="block"
+                onClick={() => handleClick(video.id)}
+              >
+                {video.videoname}
+              </Link>
+            </p>
+          )}
+          {videos
+            .filter((v) => v.input === video.id)
+            .map((subVideo) => (
+              <Link
+                key={subVideo.id}
+                to={`/dashboard/${userId}/${subVideo.id}`}
+                className="ml-4 block text-sm text-gray-700 hover:text-gray-900 w-full"
+                onClick={() => handleClick(subVideo.id)}
+              >
+                {subVideo.videoname}
+              </Link>
+            ))}
         </div>
-    );
+      ))}
+    </div>
+  );
 }
 
 export default Sidebar;
