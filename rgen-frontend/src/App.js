@@ -1,3 +1,4 @@
+// app.js
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 
@@ -24,6 +25,7 @@ function App() {
 
   const handleLogout = () => {
     setLoggedIn(false);
+    setUserId("");
   };
 
   return (
@@ -35,11 +37,11 @@ function App() {
             <Sidebar userId={userId} />
             <div className="absolute w-3/5 bottom-16 left-1/3 top-32 bg-lime-600 rounded-3xl">
               <Routes>
-                <Route path="/dashboard/:userId/:id" element={<Dashboard userId={userId} />} />
+                <Route path="/dashboard/:id" element={<Dashboard userId={userId} />} />
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/history" element={<History />} />
                 <Route path="/pricing" element={<Pricing />} />
-                <Route path="/settings" element={<Settings />} />
+                <Route path="/settings" element={<Settings userId={userId} />} />
               </Routes>
             </div>
           </>
