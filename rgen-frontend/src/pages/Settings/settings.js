@@ -3,7 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Settings({ userId }) {
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState({
+    email: '',
+    userId: '',
+    password: '',
+    phone: '',
+    username: '',
+  });
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -29,7 +35,7 @@ function Settings({ userId }) {
       .then((response) => response.json())
       .then((data) => {
         console.log('Fetched user data:', data);
-        setUserData(data || {}); // Initialize with empty object if data is null
+        setUserData(data || {});
         setFormData(data || {});
       })
       .catch((error) => {
@@ -46,6 +52,7 @@ function Settings({ userId }) {
     setFormData((prevData) => ({
       ...prevData,
       [e.target.name]: e.target.value,
+      userId: userId,
     }));
   };
 
@@ -57,7 +64,13 @@ function Settings({ userId }) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({
+        userId: formData.userId,
+        username: formData.username,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+      }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -123,7 +136,7 @@ function Settings({ userId }) {
             Password
           </label>
           <input
-            type="password"
+            type="text"
             id="password"
             name="password"
             value={formData.password || ''}

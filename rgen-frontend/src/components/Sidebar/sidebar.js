@@ -1,7 +1,8 @@
+// Sidebar.js
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-function Sidebar({ userId }) {
+function Sidebar({ userId, setVidId }) {
   const [videos, setVideos] = useState([]);
   const navigate = useNavigate();
 
@@ -24,8 +25,9 @@ function Sidebar({ userId }) {
     }
   }, [userId]);
 
-  const handleClick = (id) => {
-    navigate(`/dashboard/${userId}/${id}`);
+  const handleClick = (videoId) => {
+    setVidId(videoId);
+    navigate('/dashboard');
   };
 
   return (
@@ -46,7 +48,7 @@ function Sidebar({ userId }) {
           {video.id === video.input && (
             <p className="font-bold w-60 bg-zinc-900 text-zinc-100">
               <Link
-                to={`/dashboard/${userId}/${video.id}`}
+                to="/dashboard"
                 className="block"
                 onClick={() => handleClick(video.id)}
               >
@@ -59,7 +61,7 @@ function Sidebar({ userId }) {
             .map((subVideo) => (
               <Link
                 key={subVideo.id}
-                to={`/dashboard/${userId}/${subVideo.id}`}
+                to="/dashboard"
                 className="ml-4 block text-sm text-gray-700 hover:text-gray-900 w-full"
                 onClick={() => handleClick(subVideo.id)}
               >
